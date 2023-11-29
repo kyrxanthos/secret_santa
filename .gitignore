@@ -2,3 +2,4 @@
 .env
 SS_Data.csv
 email_check.py
+__pycache__
