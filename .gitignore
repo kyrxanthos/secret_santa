@@ -1,0 +1,4 @@
+.DS_Store
+.env
+SS_Data.csv
+email_check.py
