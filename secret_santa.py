@@ -15,7 +15,8 @@ password = os.environ.get('ssPASSWORD')
 smtp_server = 'smtp.gmail.com'
 smtp_port = 465
 
-attachment = 'dwight.gif'
+# attachment = 'dwight.gif'
+attachment = 'home_alone.gif'
 df = pd.read_csv('SS_Data.csv')
 sender_email = 'cysecret.santa24@gmail.com'
 
@@ -79,5 +80,51 @@ def secret_santa(df):
         # print(f"Email sent from {sender} to {recipient}")
 
 
+def send_reminder_email(name, email):
+
+    corresponding_name = name
+
+    subject = "Secret Santa Gift Reminder"
+    body = f"Dear {corresponding_name},\n\nKind reminder to buy your secret santa gift 🎁 if you haven't already done so!\n\nAre you naughty and didn't fill out your availibility in the doodle poll? Here's the link again: https://doodle.com/meeting/participate/id/avYNyV8e 🎄\n\nHOHOHO\nYour Secret Santa Bot\n\n"
+
+    # Compose the email
+    msg = MIMEMultipart()
+    msg['From'] = 'Secret Santa Bot'
+    msg['To'] = email
+    msg['Subject'] = subject
+
+    msg.attach(MIMEText(body, 'plain'))
+
+    with open(attachment, 'rb') as fp:
+        img = MIMEImage(fp.read())
+    img.add_header('Content-ID', '<{}>'.format(attachment))
+    msg.attach(img)
+
+    context = ssl.create_default_context()
+
+    try:
+        with smtplib.SMTP_SSL(smtp_server, smtp_port, context=context) as smtp:
+            smtp.login(username, password)
+
+            # Send the email
+            smtp.send_message(msg)
+            print('Email sent successfully.')
+
+    except Exception as e:
+        print(f'Error: {e}')
+
+
+def reminder(df):
+    names = df['Name'].tolist()
+    email_list = df['email'].tolist()
+        
+
+    for i in range(len(email_list)):
+        sender = names[i]
+        email = email_list[i]
+        print(sender)
+        send_reminder_email(sender, email)
+
 if __name__ == "__main__":
-    secret_santa(df)
+    # secret_santa(df)
+    reminder(df)
